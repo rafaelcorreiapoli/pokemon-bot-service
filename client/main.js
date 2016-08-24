@@ -4,11 +4,11 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import './main.html';
 
 import { Bots } from '/imports/api/bots'
-import { Detections } from '/imports/api/detections'
+import { Encounters } from '/imports/api/encounters'
 import { Pokemons } from '/imports/api/pokemons'
 import { PatrolRoutes } from '/imports/api/patrolRoutes'
 
-const botId = '3sWoNvDSNsBfYMkFG';
+const botId = 'QZLMsr2w895q84pvp';
 
 Template.panel.events({
   'click #login'() {
@@ -23,7 +23,7 @@ Template.panel.events({
 
     console.log(latitude, longitude);
 
-    Meteor.call('setBotCoordinates', '3sWoNvDSNsBfYMkFG', {
+    Meteor.call('setBotCoordinates', botId, {
       latitude,
       longitude
     })
