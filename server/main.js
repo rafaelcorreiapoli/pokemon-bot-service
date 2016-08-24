@@ -217,7 +217,7 @@ Meteor.methods({
 
     botInstance.GetProfile(Meteor.bindEnvironment((err, profile) => {
       if (err) {
-        return console.log('[Error] ', err.toString())
+        return console.log('[Error] ', err)
       }
 
       Bots.update({
@@ -282,7 +282,7 @@ Meteor.methods({
 
     botInstance.init(bot.email, bot.password, location, 'google', Meteor.bindEnvironment((err) => {
       if (err) {
-        return console.log('[Error] ', err.toString())
+        return console.log('[Error] ', JSON.stringify(err))
       }
 
       Bots.update({

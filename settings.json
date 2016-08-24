@@ -1,0 +1,7 @@
+{
+  "galaxy.meteor.com": {
+     "env": {
+       "MONGO_URL": "mongodb://rafa93br:POLIq1w2e3$@ds013916.mlab.com:13916/heroku_k3rsllmx"
+     }
+   }
+}
