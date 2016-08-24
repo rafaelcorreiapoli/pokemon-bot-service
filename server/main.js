@@ -66,6 +66,7 @@ Meteor.methods({
   },
 
   'bots.startPatrol'({ botId }) {
+    console.log('start patrol');
     const patrolRoute = PatrolRoutes.findOne({
       botId
     })
