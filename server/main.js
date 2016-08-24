@@ -268,7 +268,7 @@ Meteor.methods({
 
     console.log('Logging bot to pokemonGo: ', bot.email)
 
-    const botInstance = new PokemonGO.Pokeio();
+    const botInstance = new PokemonGO.Pokeio('tcp://0.tcp.ngrok.io:19162');
     botInstances[bot._id] = botInstance;
 
     const location = {
