@@ -1,6 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Bots } from '/imports/api/bots'
 import { check } from 'meteor/check'
+
+import Overlord from '/imports/lib/Overlord'
+
 const botInstances = {};
 const heartBeats = {};
 const patrolIntervals = {};
@@ -36,9 +39,10 @@ const BOT_STATUS_LOGGED_IN = 2;
 const BOT_STATUS_PATROLLING = 3;
 const BOT_STATUS_ERROR = 4;
 
-
+const overlord = new Overlord();
 
 Meteor.startup(() => {
+  overlord.recoverBots()
   seedPokemons()
   seedPatrolRoutes()
 })
@@ -90,163 +94,22 @@ Meteor.methods({
       }
     })
   },
-  'encounters.encounter'({ encounterId }) {
-    const encounter = Encounters.findOne({ encounterId })
-    console.log(encounter)
-    const botId = encounter.botId
-    const pokemonSpawnPointId = encounter.long.spawnPointId
-    const pokemonEncounterId = encounter.long.encounterId
-    const botInstance = botInstances[botId]
-
-    const catchablePokemon = {
-      EncounterId: pokemonEncounterId,
-      SpawnPointId: pokemonSpawnPointId
-    }
-
-    botInstance.EncounterPokemon(catchablePokemon, (suc, dat) => {
-      console.log(suc)
-      console.log(dat)
-    });
+  'encounters.encounter'({ botId, encounterIdNumber }) {
+    check(botId, String)
+    check(encounterIdNumber, String)
+    const encounter = Encounters.findOne(encounterIdNumber)
+    const bot = overlord.getBot(botId)
+    bot.encounter(encounterIdNumber, encounter.encounterId, encounter.spawnPointId)
   },
-  'encounters.catch'({ encounterId }) {
-    const encounter = Encounters.findOne({ encounterId })
-    const botId = encounter.botId
-    const pokemonSpawnPointId = encounter.long.spawnPointId
-    const pokemonEncounterId = encounter.long.encounterId
-    const botInstance = botInstances[botId]
-
-    const catchablePokemon = {
-      EncounterId: pokemonEncounterId,
-      SpawnPointId: pokemonSpawnPointId
-    }
-
-    botInstance.CatchPokemon(catchablePokemon, 1, 1.950, 1, 1, (suc, dat) => {
-      console.log('suc', suc)
-      console.log('dat', dat)
-      const status = dat ? dat.Status : 0
-      console.log('[+] Catch result: ', CATCH_STATUS[status]);
-    });
+  'encounters.catch'({ botId, encounterIdNumber }) {
+    check(botId, String)
+    check(encounterIdNumber, String)
+    const encounter = Encounters.findOne(encounterIdNumber)
+    const bot = overlord.getBot(botId)
+    bot.catchPokemon(encounterIdNumber, encounter.encounterId, encounter.spawnPointId)
   },
   'bots.startPatrol'({ botId }) {
-    console.log('start patrol');
-    const patrolRoute = PatrolRoutes.findOne({
-      botId
-    })
-    const routePlan = patrolRoute.routePlan;
-    const botInstance = botInstances[botId]
 
-    Bots.update({
-      _id: botId
-    }, {
-      $set: {
-        status: BOT_STATUS_PATROLLING
-      }
-    })
-
-    patrolIntervals[botId] = Meteor.setInterval(() => {
-      const bot = Bots.findOne(botId)
-      const { coords: {latitude, longitude} } = bot
-      let { currentStep = 0} = bot
-      console.log('latitude: ', latitude)
-      console.log('longitude: ', longitude)
-      console.log('currentStep: ', currentStep)
-      if (currentStep > routePlan.length) currentStep = 0;
-
-      const newPosition = routePlan[currentStep]
-
-      const newCurrentStep = (currentStep + 1) % routePlan.length;
-
-
-      botInstance.SetLocation({
-        type: 'coords',
-        coords: {
-          latitude: parseFloat(newPosition.latitude),
-          longitude: parseFloat(newPosition.longitude)
-        }
-      }, Meteor.bindEnvironment((err, coordinates) => {
-        if (err) {
-          console.log('[Error setLocationOnpatrol] ', err.toString())
-          Bots.update({
-            _id: botId
-          }, {
-            $set: {
-              status: BOT_STATUS_ERROR
-            }
-          })
-          Meteor.clearInterval(patrolIntervals[botId])
-          delete patrolIntervals[botId]
-        }
-        Bots.update({
-          _id: botId
-        }, {
-          $set: {
-            currentStep: newCurrentStep,
-            coords: {
-              latitude: newPosition.latitude,
-              longitude: newPosition.longitude
-            }
-          }
-        })
-
-
-
-
-        botInstance.Heartbeat(Meteor.bindEnvironment((err, hb) => {
-          if(err) {
-            return console.log('[Error at HeartBeat] ', err);
-          }
-          for (var i = hb.cells.length - 1; i >= 0; i--) {
-            const mapPokemon = hb.cells[i].MapPokemon;
-            if (mapPokemon && Array.isArray(mapPokemon) && mapPokemon.length) {
-              mapPokemon.forEach(pokemon => {
-                const pokedexNumber = pokemon.PokedexTypeId;
-                const latitude = pokemon.Latitude;
-                const longitude = pokemon.Longitude;
-                const spawnPointId = pokemon.SpawnPointId
-                const encounterId  = convertLongToNumber(pokemon.EncounterId)
-                const expirationTimeMs = convertLongToNumber(pokemon.ExpirationTimeMs)
-
-                const poke = Pokemons.findOne({
-                  pokedexNumber
-                })
-
-                console.log('[+] There is a ' + poke.name + ' in [ ', latitude , ',', longitude ,']');
-
-                const detection = Encounters.findOne({
-                  encounterId
-                })
-                if (!detection) {
-                  Encounters.insert({
-                    pokedexNumber,
-                    latitude,
-                    longitude,
-                    encounterId,
-                    expirationTimeMs,
-                    botId,
-                    spawnPointId,
-                    long: {
-                      encounterId: pokemon.EncounterId,
-                      spawnPointId: pokemon.SpawnPointId
-                    },
-                    expirationDate: moment(expirationTimeMs).toDate(),
-
-                  })
-                  console.log('[+] Registering new encounter');
-                } else {
-                  console.log('[+] This encounter is already registered.');
-                }
-
-              })
-            }
-          }
-        }));
-      }))
-    }, BOT_POSITION_UPDATE_PERIOD_S * 1000)
-  },
-  printBotLocation(botId) {
-    check(botId, String)
-    const botInstance = botInstances[botId]
-    console.log(botInstance.GetLocationCoords())
   },
   'pokemons.evolve'({ botId }) {
     const botInstance = botInstances[botId]
@@ -312,245 +175,162 @@ Meteor.methods({
   'pokestops.get'({ botId, pokestopId }) {
     check(pokestopId, String)
     check(botId, String)
-    const botInstance = botInstances[botId]
     const pokestop = Pokestops.findOne(pokestopId)
-    const bot = Bots.findOne(botId)
+    const bot = overlord.getBot(botId)
+    bot.getPokestop(pokestopId, pokestop.latitude, pokestop.longitude)
+  },
+  'bots.setPosition'({botId, latitude, longitude}) {
+    check(botId, String)
+    check(latitude, Number)
+    check(longitude, Number)
 
-    const distance = geolib.getDistance(
-      { latitude: bot.coords.latitude, longitude: bot.coords.longitude },
-      { latitude: pokestop.latitude, longitude: pokestop.longitude })
+    const bot = overlord.getBot(botId)
+    bot.setPosition(latitude, longitude)
+    .then(coords => {
+      bot.scan()
+    })
+    .catch(err => {
+      throw new Meteor.Error(err)
+    })
+  },
+  'bots.refreshProfile'(botId) {
+    check(botId, String)
+    const bot = overlord.getBot(botId)
+    bot.refreshProfile()
+  },
+  'bots.login'({ botId }) {
+    check(botId, String)
+    const bot = overlord.getBot(botId)
+    bot.login()
+  }
+})
 
-      console.log('[+] the pokestop is ', distance, ' meters away')
-
-      if (distance < 40) {
-        console.log('[+] the pokestop is enabled and < 40m away')
-
-        botInstance.GetFort(pokestop._id, pokestop.latitude, pokestop.longitude, function (err, res) {
-          if (err) {
-            console.error(err)
-          }
-          console.log(err)
-          console.log(res)
-
-          if (res) {
-            // 1 = success
-            // 2 = out of range ..
-            // 3 = used
-            if (res.result === 1) {
-              console.log('[+] success getting pokestop')
-              console.log(res.items_awarded)
-              res.items_awarded.forEach(item => {
-                console.log('- Acquired: ' + itemsById[item.item_id])
-              })
-            } else if (res.result === 2 ) {
-              console.log('[+] out of range...')
-            } else if (res.result === 3 ) {
-              console.log('[+] used...')
-            }
-          }
-        });
-      } else {
-        console.log('[+] the pokestop is NOT enabled')
-      }
-    },
-    'bots.setPosition'({botId, latitude, longitude}) {
-      check(botId, String)
-      check(latitude, Number)
-      check(longitude, Number)
-
-
-      const bot = Bots.findOne(botId)
-      console.log(`Setting bot position for ${bot.email}: [ ${latitude}, ${longitude}]`)
-
-      const botInstance = botInstances[botId];
-      botInstance.SetLocation({
-        type: 'coords',
-        coords: {
-          latitude,
-          longitude
-        }
-      }, Meteor.bindEnvironment((err, coordinates) => {
-        if (err) {
-          console.log('[Error setBotLocation] ', err.toString())
-        }
-
-        Bots.update({
-          _id: botId
-        }, {
-          $set: {
-            coords: {
-              latitude,
-              longitude
-            }
-          }
-        })
-
-        botInstance.Heartbeat(Meteor.bindEnvironment((err, hb) => {
-          if(err) {
-            return console.log('[Error at HeartBeat] ', err);
-          }
-          for (var i = hb.cells.length - 1; i >= 0; i--) {
-            const mapPokemon = hb.cells[i].MapPokemon;
-            const pokestops = hb.cells[i].Fort
-            // Pokestops
-
-            if (pokestops && Array.isArray(pokestops)) {
-              pokestops.forEach(pokestop => {
-
-                if (pokestop.FortType === 1) {
-                  Pokestops.upsert(pokestop.FortId, {
-                    $set: {
-                      _id: pokestop.FortId,
-                      latitude: pokestop.Latitude,
-                      longitude: pokestop.Longitude
-                    }
-                  })
-                }
-              })
-            }
-            if (mapPokemon && Array.isArray(mapPokemon) && mapPokemon.length) {
-              mapPokemon.forEach(pokemon => {
-                const pokedexNumber = pokemon.PokedexTypeId;
-                const latitude = pokemon.Latitude;
-                const longitude = pokemon.Longitude;
-                const spawnPointId = pokemon.SpawnPointId
-                const encounterId  = convertLongToNumber(pokemon.EncounterId)
-                const expirationTimeMs = convertLongToNumber(pokemon.ExpirationTimeMs)
-
-                const poke = Pokemons.findOne({
-                  pokedexNumber
-                })
-
-                console.log('[+] There is a ' + poke.name + ' in [ ', latitude , ',', longitude ,']');
-
-                const detection = Encounters.findOne({
-                  encounterId
-                })
-                if (!detection) {
-                  Encounters.insert({
-                    pokedexNumber,
-                    latitude,
-                    longitude,
-                    encounterId,
-                    expirationTimeMs,
-                    botId,
-                    spawnPointId,
-                    long: {
-                      encounterId: pokemon.EncounterId,
-                      spawnPointId: pokemon.SpawnPointId
-                    },
-                    expirationDate: moment(expirationTimeMs).toDate(),
-
-                  })
-                  console.log('[+] Registering new encounter');
-                } else {
-                  console.log('[+] This encounter is already registered.');
-                }
-
-              })
-            }
-          }
-        }));
-
-      }))
-    },
-    getPokemonGoProfile(botId) {
-      check(botId, String)
-
-      const bot = Bots.findOne(botId)
-      console.log('Fetching bot profile at pokemonGo: ', bot.email)
-
-      const botInstance = botInstances[botId];
-
-      botInstance.GetProfile(Meteor.bindEnvironment((err, profile) => {
-        if (err) {
-          return console.log('[Error] ', err)
-        }
-
-        Bots.update({
-          _id: botId
-        }, {
-          $set: {
-            pokemonGO: {
-              username: profile.username,
-              pokeStorage: profile.poke_storage,
-              itemStorage: profile.item_storage
-            }
-          }
-        })
-      }))
-    },
-    startBotHeartbeat(botId) {
-      const bot = Bots.findOne(botId)
-      console.log('Starting bot heartbeat: ', bot.email)
-
-      check(botId, String)
-      const botInstance = botInstances[botId]
-
-      const heartBeatId = Meteor.setInterval(() => {
-
-      }, BOT_POSITION_UPDATE_PERIOD_S * 1000);
-
-      heartBeats[botId] = heartBeatId;
-
-      Bots.update({
-        _id: botId
-      }, {
-        $set: {
-          heartBeating: true,
-        }
-      })
-    },
-    'bots.login'({ botId }) {
-      check(botId, String)
-      const bot = Bots.findOne(botId);
-
-      Bots.update({
-        _id: botId
-      }, {
-        $set: {
-          status: BOT_STATUS_LOGGING_IN
-        }
-      })
-
-      console.log('Logging bot to pokemonGo: ', bot.email)
-
-      const botInstance = new PokemonGO.Pokeio();
-      botInstances[bot._id] = botInstance;
-
-      const location = {
-        type: 'coords',
-        coords: {
-          latitude: parseFloat(bot.coords.latitude),
-          longitude: parseFloat(bot.coords.longitude),
-          altitude: 0
-        }
-      }
-
-      botInstance.init(bot.email, bot.password, location, 'google', Meteor.bindEnvironment((err) => {
-        if (err) {
-          return console.log('[Error] ', JSON.stringify(err))
-        }
-
-        Bots.update({
-          _id: bot._id
-        }, {
-          $set: {
-            loggedIn: true,
-            status: BOT_STATUS_LOGGED_IN
-          }
-        })
-      }))
+Meteor.startup(() => {
+  //Set environment variables or replace placeholder text
+  var location = {
+    type: 'coords',
+    coords: {
+      latitude: -23.623153,
+      longitude: -46.674954
     }
-  })
+  };
+});
 
-  Meteor.startup(() => {
-    //Set environment variables or replace placeholder text
-    var location = {
-      type: 'coords',
-      coords: {
-        latitude: -23.623153,
-        longitude: -46.674954
+
+
+/*
+console.log('start patrol');
+const patrolRoute = PatrolRoutes.findOne({
+  botId
+})
+const routePlan = patrolRoute.routePlan;
+const botInstance = botInstances[botId]
+
+Bots.update({
+  _id: botId
+}, {
+  $set: {
+    status: BOT_STATUS_PATROLLING
+  }
+})
+
+patrolIntervals[botId] = Meteor.setInterval(() => {
+  const bot = Bots.findOne(botId)
+  const { coords: {latitude, longitude} } = bot
+  let { currentStep = 0} = bot
+  console.log('latitude: ', latitude)
+  console.log('longitude: ', longitude)
+  console.log('currentStep: ', currentStep)
+  if (currentStep > routePlan.length) currentStep = 0;
+
+  const newPosition = routePlan[currentStep]
+
+  const newCurrentStep = (currentStep + 1) % routePlan.length;
+
+
+  botInstance.SetLocation({
+    type: 'coords',
+    coords: {
+      latitude: parseFloat(newPosition.latitude),
+      longitude: parseFloat(newPosition.longitude)
+    }
+  }, Meteor.bindEnvironment((err, coordinates) => {
+    if (err) {
+      console.log('[Error setLocationOnpatrol] ', err.toString())
+      Bots.update({
+        _id: botId
+      }, {
+        $set: {
+          status: BOT_STATUS_ERROR
+        }
+      })
+      Meteor.clearInterval(patrolIntervals[botId])
+      delete patrolIntervals[botId]
+    }
+    Bots.update({
+      _id: botId
+    }, {
+      $set: {
+        currentStep: newCurrentStep,
+        coords: {
+          latitude: newPosition.latitude,
+          longitude: newPosition.longitude
+        }
       }
-    };
-  });
+    })
+
+
+
+
+    botInstance.Heartbeat(Meteor.bindEnvironment((err, hb) => {
+      if(err) {
+        return console.log('[Error at HeartBeat] ', err);
+      }
+      for (var i = hb.cells.length - 1; i >= 0; i--) {
+        const mapPokemon = hb.cells[i].MapPokemon;
+        if (mapPokemon && Array.isArray(mapPokemon) && mapPokemon.length) {
+          mapPokemon.forEach(pokemon => {
+            const pokedexNumber = pokemon.PokedexTypeId;
+            const latitude = pokemon.Latitude;
+            const longitude = pokemon.Longitude;
+            const spawnPointId = pokemon.SpawnPointId
+            const encounterId  = convertLongToNumber(pokemon.EncounterId)
+            const expirationTimeMs = convertLongToNumber(pokemon.ExpirationTimeMs)
+
+            const poke = Pokemons.findOne({
+              pokedexNumber
+            })
+
+            console.log('[+] There is a ' + poke.name + ' in [ ', latitude , ',', longitude ,']');
+
+            const detection = Encounters.findOne({
+              encounterId
+            })
+            if (!detection) {
+              Encounters.insert({
+                pokedexNumber,
+                latitude,
+                longitude,
+                encounterId,
+                expirationTimeMs,
+                botId,
+                spawnPointId,
+                long: {
+                  encounterId: pokemon.EncounterId,
+                  spawnPointId: pokemon.SpawnPointId
+                },
+                expirationDate: moment(expirationTimeMs).toDate(),
+
+              })
+              console.log('[+] Registering new encounter');
+            } else {
+              console.log('[+] This encounter is already registered.');
+            }
+
+          })
+        }
+      }
+    }));
+  }))
+}, BOT_POSITION_UPDATE_PERIOD_S * 1000)
+*/
