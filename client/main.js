@@ -7,6 +7,7 @@ import { Bots } from '/imports/api/bots'
 import { Encounters } from '/imports/api/encounters'
 import { Pokemons } from '/imports/api/pokemons'
 import { PatrolRoutes } from '/imports/api/patrolRoutes'
+import { Pokestops } from '/imports/api/pokestops'
 
 const botId = 'QZLMsr2w895q84pvp';
 

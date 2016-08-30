@@ -7,7 +7,7 @@ export default [
     "type": "Grass / Poison",
     "height": "0.71 m",
     "weight": "6.9 kg",
-    "candy": "25 Bulbasaur Candy",
+    "candy": 25,
     "egg": "2 km"
   },
   {
@@ -18,7 +18,7 @@ export default [
     "type": "Grass / Poison",
     "height": "0.99 m",
     "weight": "13.0 kg",
-    "candy": "100 Bulbasaur Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -29,7 +29,7 @@ export default [
     "type": "Grass / Poison",
     "height": "2.01 m",
     "weight": "100.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -40,7 +40,7 @@ export default [
     "type": "Fire",
     "height": "0.61 m",
     "weight": "8.5 kg",
-    "candy": "25 Charmander Candy",
+    "candy": 25,
     "egg": "2 km"
   },
   {
@@ -51,7 +51,7 @@ export default [
     "type": "Fire",
     "height": "1.09 m",
     "weight": "19.0 kg",
-    "candy": "100 Charmander Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -62,7 +62,7 @@ export default [
     "type": "Fire / Flying",
     "height": "1.70 m",
     "weight": "90.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -73,7 +73,7 @@ export default [
     "type": "Water",
     "height": "0.51 m",
     "weight": "9.0 kg",
-    "candy": "25 Squirtle Candy",
+    "candy": 25,
     "egg": "2 km"
   },
   {
@@ -84,7 +84,7 @@ export default [
     "type": "Water",
     "height": "0.99 m",
     "weight": "22.5 kg",
-    "candy": "100 Squirtle Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -95,7 +95,7 @@ export default [
     "type": "Water",
     "height": "1.60 m",
     "weight": "85.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -106,7 +106,7 @@ export default [
     "type": "Bug",
     "height": "0.30 m",
     "weight": "2.9 kg",
-    "candy": "12 Caterpie Candy",
+    "candy": 12,
     "egg": "2 km"
   },
   {
@@ -117,7 +117,7 @@ export default [
     "type": "Bug",
     "height": "0.71 m",
     "weight": "9.9 kg",
-    "candy": "50 Caterpie Candy",
+    "candy": 50,
     "egg": "Not in Eggs"
   },
   {
@@ -128,7 +128,7 @@ export default [
     "type": "Bug / Flying",
     "height": "1.09 m",
     "weight": "32.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -139,7 +139,7 @@ export default [
     "type": "Bug / Poison",
     "height": "0.30 m",
     "weight": "3.2 kg",
-    "candy": "12 Weedle Candy",
+    "candy": 12,
     "egg": "2 km"
   },
   {
@@ -150,7 +150,7 @@ export default [
     "type": "Bug / Poison",
     "height": "0.61 m",
     "weight": "10.0 kg",
-    "candy": "50 Weedle Candy",
+    "candy": 50,
     "egg": "Not in Eggs"
   },
   {
@@ -161,7 +161,7 @@ export default [
     "type": "Bug / Poison",
     "height": "0.99 m",
     "weight": "29.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -172,7 +172,7 @@ export default [
     "type": "Normal / Flying",
     "height": "0.30 m",
     "weight": "1.8 kg",
-    "candy": "12 Pidgey Candy",
+    "candy": 12,
     "egg": "2 km"
   },
   {
@@ -183,7 +183,7 @@ export default [
     "type": "Normal / Flying",
     "height": "1.09 m",
     "weight": "30.0 kg",
-    "candy": "50 Pidgey Candy",
+    "candy": 50,
     "egg": "Not in Eggs"
   },
   {
@@ -194,7 +194,7 @@ export default [
     "type": "Normal / Flying",
     "height": "1.50 m",
     "weight": "39.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -205,7 +205,7 @@ export default [
     "type": "Normal",
     "height": "0.30 m",
     "weight": "3.5 kg",
-    "candy": "25 Rattata Candy",
+    "candy": 25,
     "egg": "2 km"
   },
   {
@@ -216,7 +216,7 @@ export default [
     "type": "Normal",
     "height": "0.71 m",
     "weight": "18.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -227,7 +227,7 @@ export default [
     "type": "Normal / Flying",
     "height": "0.30 m",
     "weight": "2.0 kg",
-    "candy": "50 Spearow Candy",
+    "candy": 50,
     "egg": "2 km"
   },
   {
@@ -238,7 +238,7 @@ export default [
     "type": "Normal / Flying",
     "height": "1.19 m",
     "weight": "38.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -249,7 +249,7 @@ export default [
     "type": "Poison",
     "height": "2.01 m",
     "weight": "6.9 kg",
-    "candy": "50 Ekans Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -260,7 +260,7 @@ export default [
     "type": "Poison",
     "height": "3.51 m",
     "weight": "65.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -271,7 +271,7 @@ export default [
     "type": "Electric",
     "height": "0.41 m",
     "weight": "6.0 kg",
-    "candy": "50 Pikachu Candy",
+    "candy": 50,
     "egg": "2 km"
   },
   {
@@ -282,7 +282,7 @@ export default [
     "type": "Electric",
     "height": "0.79 m",
     "weight": "30.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -293,7 +293,7 @@ export default [
     "type": "Ground",
     "height": "0.61 m",
     "weight": "12.0 kg",
-    "candy": "50 Sandshrew Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -304,7 +304,7 @@ export default [
     "type": "Ground",
     "height": "0.99 m",
     "weight": "29.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -315,7 +315,7 @@ export default [
     "type": "Poison",
     "height": "0.41 m",
     "weight": "7.0 kg",
-    "candy": "25 Nidoran ♀ Candy",
+    "candy": 25,
     "egg": "5 km"
   },
   {
@@ -326,7 +326,7 @@ export default [
     "type": "Poison",
     "height": "0.79 m",
     "weight": "20.0 kg",
-    "candy": "100 Nidoran ♀ Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -337,7 +337,7 @@ export default [
     "type": "Poison / Ground",
     "height": "1.30 m",
     "weight": "60.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -348,7 +348,7 @@ export default [
     "type": "Poison",
     "height": "0.51 m",
     "weight": "9.0 kg",
-    "candy": "25 Nidoran♂ Candy",
+    "candy": 25,
     "egg": "5 km"
   },
   {
@@ -359,7 +359,7 @@ export default [
     "type": "Poison",
     "height": "0.89 m",
     "weight": "19.5 kg",
-    "candy": "100 Nidoran ♂ Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -370,7 +370,7 @@ export default [
     "type": "Poison / Ground",
     "height": "1.40 m",
     "weight": "62.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -381,7 +381,7 @@ export default [
     "type": "Normal",
     "height": "0.61 m",
     "weight": "7.5 kg",
-    "candy": "50 Clefairy Candy",
+    "candy": 50,
     "egg": "2 km"
   },
   {
@@ -392,7 +392,7 @@ export default [
     "type": "Normal",
     "height": "1.30 m",
     "weight": "40.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -403,7 +403,7 @@ export default [
     "type": "Fire",
     "height": "0.61 m",
     "weight": "9.9 kg",
-    "candy": "50 Vulpix Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -414,7 +414,7 @@ export default [
     "type": "Fire",
     "height": "1.09 m",
     "weight": "19.9 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -425,7 +425,7 @@ export default [
     "type": "Normal",
     "height": "0.51 m",
     "weight": "5.5 kg",
-    "candy": "50 Jigglypuff Candy",
+    "candy": 50,
     "egg": "2 km"
   },
   {
@@ -436,7 +436,7 @@ export default [
     "type": "Normal",
     "height": "0.99 m",
     "weight": "12.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -447,7 +447,7 @@ export default [
     "type": "Poison / Flying",
     "height": "0.79 m",
     "weight": "7.5 kg",
-    "candy": "50 Zubat Candy",
+    "candy": 50,
     "egg": "2 km"
   },
   {
@@ -458,7 +458,7 @@ export default [
     "type": "Poison / Flying",
     "height": "1.60 m",
     "weight": "55.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -469,7 +469,7 @@ export default [
     "type": "Grass / Poison",
     "height": "0.51 m",
     "weight": "5.4 kg",
-    "candy": "25 Oddish Candy",
+    "candy": 25,
     "egg": "5 km"
   },
   {
@@ -480,7 +480,7 @@ export default [
     "type": "Grass / Poison",
     "height": "0.79 m",
     "weight": "8.6 kg",
-    "candy": "100 Oddish Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -491,7 +491,7 @@ export default [
     "type": "Grass / Poison",
     "height": "1.19 m",
     "weight": "18.6 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -502,7 +502,7 @@ export default [
     "type": "Bug / Grass",
     "height": "0.30 m",
     "weight": "5.4 kg",
-    "candy": "50 Paras Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -513,7 +513,7 @@ export default [
     "type": "Bug / Grass",
     "height": "0.99 m",
     "weight": "29.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -524,7 +524,7 @@ export default [
     "type": "Bug / Poison",
     "height": "0.99 m",
     "weight": "30.0 kg",
-    "candy": "50 Venonat Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -535,7 +535,7 @@ export default [
     "type": "Bug / Poison",
     "height": "1.50 m",
     "weight": "12.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -546,7 +546,7 @@ export default [
     "type": "Ground",
     "height": "0.20 m",
     "weight": "0.8 kg",
-    "candy": "50 Diglett Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -557,7 +557,7 @@ export default [
     "type": "Ground",
     "height": "0.71 m",
     "weight": "33.3 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -568,7 +568,7 @@ export default [
     "type": "Normal",
     "height": "0.41 m",
     "weight": "4.2 kg",
-    "candy": "50 Meowth Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -579,7 +579,7 @@ export default [
     "type": "Normal",
     "height": "0.99 m",
     "weight": "32.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -590,7 +590,7 @@ export default [
     "type": "Water",
     "height": "0.79 m",
     "weight": "19.6 kg",
-    "candy": "50 Psyduck Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -601,7 +601,7 @@ export default [
     "type": "Water",
     "height": "1.70 m",
     "weight": "76.6 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -612,7 +612,7 @@ export default [
     "type": "Fighting",
     "height": "0.51 m",
     "weight": "28.0 kg",
-    "candy": "50 Mankey Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -623,7 +623,7 @@ export default [
     "type": "Fighting",
     "height": "0.99 m",
     "weight": "32.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -634,7 +634,7 @@ export default [
     "type": "Fire",
     "height": "0.71 m",
     "weight": "19.0 kg",
-    "candy": "50 Growlithe Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -645,7 +645,7 @@ export default [
     "type": "Fire",
     "height": "1.91 m",
     "weight": "155.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -656,7 +656,7 @@ export default [
     "type": "Water",
     "height": "0.61 m",
     "weight": "12.4 kg",
-    "candy": "25 Poliwag Candy",
+    "candy": 25,
     "egg": "5 km"
   },
   {
@@ -667,7 +667,7 @@ export default [
     "type": "Water",
     "height": "0.99 m",
     "weight": "20.0 kg",
-    "candy": "100 Poliwag Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -678,7 +678,7 @@ export default [
     "type": "Water / Fighting",
     "height": "1.30 m",
     "weight": "54.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -689,7 +689,7 @@ export default [
     "type": "Psychic",
     "height": "0.89 m",
     "weight": "19.5 kg",
-    "candy": "25 Abra Candy",
+    "candy": 25,
     "egg": "5 km"
   },
   {
@@ -700,7 +700,7 @@ export default [
     "type": "Psychic",
     "height": "1.30 m",
     "weight": "56.5 kg",
-    "candy": "100 Abra Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -711,7 +711,7 @@ export default [
     "type": "Psychic",
     "height": "1.50 m",
     "weight": "48.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -722,7 +722,7 @@ export default [
     "type": "Fighting",
     "height": "0.79 m",
     "weight": "19.5 kg",
-    "candy": "25 Machop Candy",
+    "candy": 25,
     "egg": "5 km"
   },
   {
@@ -733,7 +733,7 @@ export default [
     "type": "Fighting",
     "height": "1.50 m",
     "weight": "70.5 kg",
-    "candy": "100 Machop Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -744,7 +744,7 @@ export default [
     "type": "Fighting",
     "height": "1.60 m",
     "weight": "130.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -755,7 +755,7 @@ export default [
     "type": "Grass / Poison",
     "height": "0.71 m",
     "weight": "4.0 kg",
-    "candy": "25 Bellsprout Candy",
+    "candy": 25,
     "egg": "5 km"
   },
   {
@@ -766,7 +766,7 @@ export default [
     "type": "Grass / Poison",
     "height": "0.99 m",
     "weight": "6.4 kg",
-    "candy": "100 Bellsprout Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -777,7 +777,7 @@ export default [
     "type": "Grass / Poison",
     "height": "1.70 m",
     "weight": "15.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -788,7 +788,7 @@ export default [
     "type": "Water / Poison",
     "height": "0.89 m",
     "weight": "45.5 kg",
-    "candy": "50 Tentacool Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -799,7 +799,7 @@ export default [
     "type": "Water / Poison",
     "height": "1.60 m",
     "weight": "55.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -810,7 +810,7 @@ export default [
     "type": "Rock / Ground",
     "height": "0.41 m",
     "weight": "20.0 kg",
-    "candy": "25 Geodude Candy",
+    "candy": 25,
     "egg": "2 km"
   },
   {
@@ -821,7 +821,7 @@ export default [
     "type": "Rock / Ground",
     "height": "0.99 m",
     "weight": "105.0 kg",
-    "candy": "100 Geodude Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -832,7 +832,7 @@ export default [
     "type": "Rock / Ground",
     "height": "1.40 m",
     "weight": "300.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -843,7 +843,7 @@ export default [
     "type": "Fire",
     "height": "0.99 m",
     "weight": "30.0 kg",
-    "candy": "50 Ponyta Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -854,7 +854,7 @@ export default [
     "type": "Fire",
     "height": "1.70 m",
     "weight": "95.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -865,7 +865,7 @@ export default [
     "type": "Water / Psychic",
     "height": "1.19 m",
     "weight": "36.0 kg",
-    "candy": "50 Slowpoke Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -876,7 +876,7 @@ export default [
     "type": "Water / Psychic",
     "height": "1.60 m",
     "weight": "78.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -887,7 +887,7 @@ export default [
     "type": "Electric",
     "height": "0.30 m",
     "weight": "6.0 kg",
-    "candy": "50 Magnemite Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -898,7 +898,7 @@ export default [
     "type": "Electric",
     "height": "0.99 m",
     "weight": "60.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -909,7 +909,7 @@ export default [
     "type": "Normal / Flying",
     "height": "0.79 m",
     "weight": "15.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "5 km"
   },
   {
@@ -920,7 +920,7 @@ export default [
     "type": "Normal / Flying",
     "height": "1.40 m",
     "weight": "39.2 kg",
-    "candy": "50 Doduo Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -931,7 +931,7 @@ export default [
     "type": "Normal / Flying",
     "height": "1.80 m",
     "weight": "85.2 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -942,7 +942,7 @@ export default [
     "type": "Water",
     "height": "1.09 m",
     "weight": "90.0 kg",
-    "candy": "50 Seel Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -953,7 +953,7 @@ export default [
     "type": "Water / Ice",
     "height": "1.70 m",
     "weight": "120.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -964,7 +964,7 @@ export default [
     "type": "Poison",
     "height": "0.89 m",
     "weight": "30.0 kg",
-    "candy": "50 Grimer Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -975,7 +975,7 @@ export default [
     "type": "Poison",
     "height": "1.19 m",
     "weight": "30.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -986,7 +986,7 @@ export default [
     "type": "Water",
     "height": "0.30 m",
     "weight": "4.0 kg",
-    "candy": "50 Shellder Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -997,7 +997,7 @@ export default [
     "type": "Water / Ice",
     "height": "1.50 m",
     "weight": "132.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1008,7 +1008,7 @@ export default [
     "type": "Ghost / Poison",
     "height": "1.30 m",
     "weight": "0.1 kg",
-    "candy": "25 Gastly Candy",
+    "candy": 25,
     "egg": "5 km"
   },
   {
@@ -1019,7 +1019,7 @@ export default [
     "type": "Ghost / Poison",
     "height": "1.60 m",
     "weight": "0.1 kg",
-    "candy": "100 Gastly Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -1030,7 +1030,7 @@ export default [
     "type": "Ghost / Poison",
     "height": "1.50 m",
     "weight": "40.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1041,7 +1041,7 @@ export default [
     "type": "Rock / Ground",
     "height": "8.79 m",
     "weight": "210.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1052,7 +1052,7 @@ export default [
     "type": "Psychic",
     "height": "0.99 m",
     "weight": "32.4 kg",
-    "candy": "50 Drowzee Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1063,7 +1063,7 @@ export default [
     "type": "Psychic",
     "height": "1.60 m",
     "weight": "75.6 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1074,7 +1074,7 @@ export default [
     "type": "Water",
     "height": "0.41 m",
     "weight": "6.5 kg",
-    "candy": "50 Krabby Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1085,7 +1085,7 @@ export default [
     "type": "Water",
     "height": "1.30 m",
     "weight": "60.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1096,7 +1096,7 @@ export default [
     "type": "Electric",
     "height": "0.51 m",
     "weight": "10.4 kg",
-    "candy": "50 Voltorb Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1107,7 +1107,7 @@ export default [
     "type": "Electric",
     "height": "1.19 m",
     "weight": "66.6 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1118,7 +1118,7 @@ export default [
     "type": "Grass / Psychic",
     "height": "0.41 m",
     "weight": "2.5 kg",
-    "candy": "50 Exeggcute Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1129,7 +1129,7 @@ export default [
     "type": "Grass / Psychic",
     "height": "2.01 m",
     "weight": "120.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1140,7 +1140,7 @@ export default [
     "type": "Ground",
     "height": "0.41 m",
     "weight": "6.5 kg",
-    "candy": "50 Cubone Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1151,7 +1151,7 @@ export default [
     "type": "Ground",
     "height": "0.99 m",
     "weight": "45.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1162,7 +1162,7 @@ export default [
     "type": "Fighting",
     "height": "1.50 m",
     "weight": "49.8 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1173,7 +1173,7 @@ export default [
     "type": "Fighting",
     "height": "1.40 m",
     "weight": "50.2 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1184,7 +1184,7 @@ export default [
     "type": "Normal",
     "height": "1.19 m",
     "weight": "65.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "5 km"
   },
   {
@@ -1195,7 +1195,7 @@ export default [
     "type": "Poison",
     "height": "0.61 m",
     "weight": "1.0 kg",
-    "candy": "50 Koffing Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1206,7 +1206,7 @@ export default [
     "type": "Poison",
     "height": "1.19 m",
     "weight": "9.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1217,7 +1217,7 @@ export default [
     "type": "Ground / Rock",
     "height": "0.99 m",
     "weight": "115.0 kg",
-    "candy": "50 Rhyhorn Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1228,7 +1228,7 @@ export default [
     "type": "Ground / Rock",
     "height": "1.91 m",
     "weight": "120.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1239,7 +1239,7 @@ export default [
     "type": "Normal",
     "height": "1.09 m",
     "weight": "34.6 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1250,7 +1250,7 @@ export default [
     "type": "Grass",
     "height": "0.99 m",
     "weight": "35.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "5 km"
   },
   {
@@ -1261,7 +1261,7 @@ export default [
     "type": "Normal",
     "height": "2.21 m",
     "weight": "80.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "5 km"
   },
   {
@@ -1272,7 +1272,7 @@ export default [
     "type": "Water",
     "height": "0.41 m",
     "weight": "8.0 kg",
-    "candy": "50 Horsea Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1283,7 +1283,7 @@ export default [
     "type": "Water",
     "height": "1.19 m",
     "weight": "25.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1294,7 +1294,7 @@ export default [
     "type": "Water",
     "height": "0.61 m",
     "weight": "15.0 kg",
-    "candy": "50 Goldeen Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1305,7 +1305,7 @@ export default [
     "type": "Water",
     "height": "1.30 m",
     "weight": "39.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1316,7 +1316,7 @@ export default [
     "type": "Water",
     "height": "0.79 m",
     "weight": "34.5 kg",
-    "candy": "50 Staryu Candy",
+    "candy": 50,
     "egg": "5 km"
   },
   {
@@ -1327,7 +1327,7 @@ export default [
     "type": "Water / Psychic",
     "height": "1.09 m",
     "weight": "80.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1338,7 +1338,7 @@ export default [
     "type": "Psychic",
     "height": "1.30 m",
     "weight": "54.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1349,7 +1349,7 @@ export default [
     "type": "Bug / Flying",
     "height": "1.50 m",
     "weight": "56.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1360,7 +1360,7 @@ export default [
     "type": "Ice / Psychic",
     "height": "1.40 m",
     "weight": "40.6 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1371,7 +1371,7 @@ export default [
     "type": "Electric",
     "height": "1.09 m",
     "weight": "30.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1382,7 +1382,7 @@ export default [
     "type": "Fire",
     "height": "1.30 m",
     "weight": "44.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1393,7 +1393,7 @@ export default [
     "type": "Bug",
     "height": "1.50 m",
     "weight": "55.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1404,7 +1404,7 @@ export default [
     "type": "Normal",
     "height": "1.40 m",
     "weight": "88.4 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "5 km"
   },
   {
@@ -1415,7 +1415,7 @@ export default [
     "type": "Water",
     "height": "0.89 m",
     "weight": "10.0 kg",
-    "candy": "400 Magikarp Candy",
+    "candy": 400,
     "egg": "2 km"
   },
   {
@@ -1426,7 +1426,7 @@ export default [
     "type": "Water / Flying",
     "height": "6.50 m",
     "weight": "235.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1437,7 +1437,7 @@ export default [
     "type": "Water / Ice",
     "height": "2.49 m",
     "weight": "220.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1448,7 +1448,7 @@ export default [
     "type": "Normal",
     "height": "0.30 m",
     "weight": "4.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1459,7 +1459,7 @@ export default [
     "type": "Normal",
     "height": "0.30 m",
     "weight": "6.5 kg",
-    "candy": "25 Eevee Candy (Evolution decided at random. Or, for first evolution, rename Eevee: Rainer => Vaporeon, Sparky => Jolteon, Pyro => Flareon)",
+    "candy": 25,
     "egg": "10 km"
   },
   {
@@ -1470,7 +1470,7 @@ export default [
     "type": "Water",
     "height": "0.99 m",
     "weight": "29.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1481,7 +1481,7 @@ export default [
     "type": "Electric",
     "height": "0.79 m",
     "weight": "24.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1492,7 +1492,7 @@ export default [
     "type": "Fire",
     "height": "0.89 m",
     "weight": "25.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1503,7 +1503,7 @@ export default [
     "type": "Normal",
     "height": "0.79 m",
     "weight": "36.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "5 km"
   },
   {
@@ -1514,7 +1514,7 @@ export default [
     "type": "Rock / Water",
     "height": "0.41 m",
     "weight": "7.5 kg",
-    "candy": "50 Omanyte Candy",
+    "candy": 50,
     "egg": "10 km"
   },
   {
@@ -1525,7 +1525,7 @@ export default [
     "type": "Rock / Water",
     "height": "0.99 m",
     "weight": "35.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1536,7 +1536,7 @@ export default [
     "type": "Rock / Water",
     "height": "0.51 m",
     "weight": "11.5 kg",
-    "candy": "50 Kabuto Candy",
+    "candy": 50,
     "egg": "10 km"
   },
   {
@@ -1547,7 +1547,7 @@ export default [
     "type": "Rock / Water",
     "height": "1.30 m",
     "weight": "40.5 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1558,7 +1558,7 @@ export default [
     "type": "Rock / Flying",
     "height": "1.80 m",
     "weight": "59.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1569,7 +1569,7 @@ export default [
     "type": "Normal",
     "height": "2.11 m",
     "weight": "460.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "10 km"
   },
   {
@@ -1580,7 +1580,7 @@ export default [
     "type": "Ice / Flying",
     "height": "1.70 m",
     "weight": "55.4 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1591,7 +1591,7 @@ export default [
     "type": "Electric / Flying",
     "height": "1.60 m",
     "weight": "52.6 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1602,7 +1602,7 @@ export default [
     "type": "Fire / Flying",
     "height": "2.01 m",
     "weight": "60.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1613,7 +1613,7 @@ export default [
     "type": "Dragon",
     "height": "1.80 m",
     "weight": "3.3 kg",
-    "candy": "25 Dratini Candy",
+    "candy": 25,
     "egg": "10 km"
   },
   {
@@ -1624,7 +1624,7 @@ export default [
     "type": "Dragon",
     "height": "3.99 m",
     "weight": "16.5 kg",
-    "candy": "100 Dratini Candy",
+    "candy": 100,
     "egg": "Not in Eggs"
   },
   {
@@ -1635,7 +1635,7 @@ export default [
     "type": "Dragon / Flying",
     "height": "2.21 m",
     "weight": "210.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1646,7 +1646,7 @@ export default [
     "type": "Psychic",
     "height": "2.01 m",
     "weight": "122.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   },
   {
@@ -1657,7 +1657,7 @@ export default [
     "type": "Psychic",
     "height": "0.41 m",
     "weight": "4.0 kg",
-    "candy": "None",
+    "candy": null,
     "egg": "Not in Eggs"
   }
 ]

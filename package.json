@@ -8,6 +8,7 @@
     "geolib": "^2.0.21",
     "long": "^3.2.0",
     "meteor-node-stubs": "~0.2.0",
+    "moment": "^2.14.1",
     "pokemon-go-node-api": "https://github.com/rafaelcorreiapoli/Pokemon-GO-node-api/tarball/1c2ae8bb0caa70ab729a5842bcb3bb9f9fbe3903"
   }
 }
