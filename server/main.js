@@ -21,11 +21,14 @@ import '/imports/api/bots/server/publications'
 import '/imports/api/encounters/server/publications'
 import '/imports/api/patrolRoutes/server/publications'
 import '/imports/api/pokestops/server/publications'
+import '/imports/api/pokemons/server/publications'
+import '/imports/api/eggs/server/publications'
 import { itemsById, pokemonsById } from '/imports/resources'
-
 import geolib from 'geolib'
-
 import moment from 'moment'
+
+import Bot2 from '/imports/lib/Bot2'
+import Overlord2 from '/imports/lib/Overlord2'
 
 const CATCH_STATUS = ['Unexpected error', 'Successful catch', 'Catch Escape', 'Catch Flee', 'Missed Catch'];
 import {
@@ -40,168 +43,131 @@ const BOT_STATUS_PATROLLING = 3;
 const BOT_STATUS_ERROR = 4;
 
 const overlord = new Overlord();
+const overlord2 = new Overlord2();
 
 Meteor.startup(() => {
   overlord.recoverBots()
-  seedPokemons()
-  seedPatrolRoutes()
 })
 
 
 const convertLongToNumber = (object) => Long.fromBits(object.low, object.high, object.unsigned).toNumber()
 
 Meteor.methods({
-  registerBot({email, password, routePoints, nickname}) {
-    check(email, String)
-    check(nickname, String)
-    check(password, String)
-    check(routePoints, Array)
-
-
-    const coords = routePoints[0]
-    console.log(`Registering new bot: ${email} / ${password} at [ ${coords.latitude}, ${coords.longitude} ]`)
-    const botId = Bots.insert({
-      coords: {
-        latitude: parseFloat(coords.latitude),
-        longitude: parseFloat(coords.longitude)
-      },
-      loggedIn: false,
-      status: BOT_STATUS_IDLE,
-      email,
-      nickname,
-      password,
-    })
-
-    const routePlan = calculateRoutePlan(routePoints, BOT_SPEED_MS, BOT_POSITION_UPDATE_PERIOD_S)
-
-    return PatrolRoutes.insert({
-      botId,
-      routePoints,
-      routePlan,
-    })
-  },
-  'bots.stopPatrol'({ botId }) {
-    const patrolInterval = patrolIntervals[botId]
-
-    if (patrolInterval) {
-      Meteor.clearInterval(patrolInterval)
+  'encounterPokemon'({ token, encounterId, spawnPointId }) {
+    check(token, String)
+    check(encounterId, String)
+    check(spawnPointId, String)
+    const bot = overlord.getBotSync(token)
+    try {
+      return bot.encounter(encounterIdNumber, encounterId, spawnPointId)
+    } catch (error) {
+      throw new Meteor.Error(error)
     }
-    Bots.update({
-      _id: botId
-    }, {
-      $set: {
-        status: BOT_STATUS_IDLE
-      }
-    })
   },
-  'encounters.encounter'({ botId, encounterIdNumber }) {
-    check(botId, String)
-    check(encounterIdNumber, String)
-    const encounter = Encounters.findOne(encounterIdNumber)
-    const bot = overlord.getBot(botId)
-    bot.encounter(encounterIdNumber, encounter.encounterId, encounter.spawnPointId)
+  'catchPokemon'({ token, encounterId, spawnPointId }) {
+    check(token, String)
+    check(encounterId, String)
+    check(spawnPointId, String)
+    const bot = overlord.getSyncBot(token)
+    try {
+      return bot.catchPokemon(encounterId, spawnPointId)
+    } catch (error) {
+      throw new Meteor.Error(error)
+    }
   },
-  'encounters.catch'({ botId, encounterIdNumber }) {
-    check(botId, String)
-    check(encounterIdNumber, String)
-    const encounter = Encounters.findOne(encounterIdNumber)
-    const bot = overlord.getBot(botId)
-    bot.catchPokemon(encounterIdNumber, encounter.encounterId, encounter.spawnPointId)
+  'fetchInventory'({ token }) {
+    check (token, String)
+    const bot = overlord.getSyncBot(token)
+    try {
+      return bot.fetchInventory()
+    } catch (error) {
+      throw new Meteor.Error(error)
+    }
   },
-  'bots.startPatrol'({ botId }) {
+  'evolvePokemon'({ token, pokemonId }) {
+    check (token, String)
+    check (pokemonId, String)
 
+    const bot = overlord.getBotSync(token)
+    try {
+      return bot.evolvePokemon(pokemonId)
+    } catch (error) {
+      throw new Meteor.Error(error)
+    }
   },
-  'pokemons.evolve'({ botId }) {
-    const botInstance = botInstances[botId]
-    const candiesByPokemon = {}
-
-    botInstance.GetInventory(function (err, inventory) {
-      if (!err) {
-        var cleanedInventory = { player_stats: null, eggs : [], pokemon: [], items: [] };
-        for (var i = 0; i < inventory.inventory_delta.inventory_items.length; i++) {
-          var inventory_item_data = inventory.inventory_delta.inventory_items[i].inventory_item_data;
-
-          if (inventory_item_data.pokemon_family) {
-            const pokemonFamily = inventory_item_data.pokemon_family;
-            const pokemonFamilyId = pokemonFamily.family_id;
-            const pokemonFamilyCandy = pokemonFamily.candy;
-            console.log(pokemonsById[pokemonFamilyId].name + ' - ' +  pokemonFamilyCandy + ' candies')
-            candiesByPokemon[pokemonFamilyId] = pokemonFamilyCandy
-          }
-          // Check for pokemon.
-          if (inventory_item_data.pokemon) {
-            var pokemon = inventory_item_data.pokemon;
-            if (pokemon.is_egg) {
-              console.log('  [E] ' + pokemon.egg_km_walked_target + ' Egg');
-              cleanedInventory.eggs.push(pokemon);
-            } else {
-              var pokedexInfo = pokemonsById[pokemon.pokemon_id]
-              console.log('  [P] ' + pokedexInfo.name + ' - ' + pokemon.cp + ' CP');
-              cleanedInventory.pokemon.push(pokemon);
-
-              if (candiesByPokemon[pokemon.pokemon_id] >= pokedexInfo.candy && pokedexInfo.candy) {
-                candiesByPokemon[pokemon.pokemon_id] = candiesByPokemon[pokemon.pokemon_id] - pokedexInfo.candy
-                console.log('SHOULD EVOLVE ' + pokedexInfo.name + ' (' + pokemon.id + ')')
-                botInstance.EvolvePokemon(pokemon.id.toString(), (err, res) => {
-                  if (err) {
-                    console.error(err)
-                  } else {
-                    console.log(res)
-                  }
-                })
-              }
-            }
-          }
-
-          // Check for player stats.
-          if (inventory_item_data.player_stats) {
-            var player = inventory_item_data.player_stats;
-            console.log('  [PL] Level ' + player.level + ' - ' + player.unique_pokedex_entries + ' Unique Pokemon');
-
-            cleanedInventory.player_stats = player;
-          }
-
-          // Check for item.
-          if (inventory_item_data.item) {
-            var item = inventory_item_data.item;
-            console.log('  [I] ' + item.item_id + ' - ' + item.count);
-
-            cleanedInventory.items.push(item);
-          }
-        }
-      }
-    });
+  'dropItem'({ token, itemId, count }) {
+    check(token, String)
+    check(itemId, Number)
+    check(counter, Number)
+    const bot = overlord.getBotSync(token)
+    try {
+      return bot.dropItem(itemId, counter)
+    } catch (error) {
+      throw new Meteor.Error(error)
+    }
   },
-  'pokestops.get'({ botId, pokestopId }) {
+  'transferPokemon'({ token, pokemonId }) {
+    check(token, String)
+    check(pokemonId, String)
+    const bot = overlord.getSyncBot(token)
+
+    try {
+      return bot.transferPokemon(pokemonId)
+    } catch (error) {
+      throw new Meteor.Error(error)
+    }
+  },
+  'getPokestop'({ token, pokestopId, latitude, longitude }) {
+    check(token, String)
     check(pokestopId, String)
-    check(botId, String)
-    const pokestop = Pokestops.findOne(pokestopId)
-    const bot = overlord.getBot(botId)
-    bot.getPokestop(pokestopId, pokestop.latitude, pokestop.longitude)
-  },
-  'bots.setPosition'({botId, latitude, longitude}) {
-    check(botId, String)
     check(latitude, Number)
     check(longitude, Number)
 
-    const bot = overlord.getBot(botId)
-    bot.setPosition(latitude, longitude)
-    .then(coords => {
-      bot.scan()
-    })
-    .catch(err => {
+    const bot = overlord.getSyncBot(token)
+
+    try {
+      return bot.getPokestop(pokestopId, lLatitude, lLongitude)
+    } catch (error) {
+      throw new Meteor.Error(error)
+    }
+
+  },
+  'setPosition'({token, latitude, longitude}) {
+    check(token, String)
+    check(latitude, Number)
+    check(longitude, Number)
+
+    const bot = overlord.getSyncBot(token)
+    try {
+      const coords = bot.setPosition(latitude, longitude)
+    } catch (error) {
       throw new Meteor.Error(err)
-    })
+    }
   },
-  'bots.refreshProfile'(botId) {
-    check(botId, String)
-    const bot = overlord.getBot(botId)
-    bot.refreshProfile()
+  'fetchProfile'({ token }) {
+    check(token, String)
+    const bot = overlord.getSyncBot(token)
+    try {
+      return bot.fetchProfile()
+    } catch (error) {
+      console.log(error)
+      throw new Meteor.Error(error)
+    }
   },
-  'bots.login'({ botId }) {
-    check(botId, String)
-    const bot = overlord.getBot(botId)
-    bot.login()
+  'login'({ email, password, coords }) {
+    check(email, String)
+    check(password, String)
+    check(coords, Object)
+    const bot = new Bot2({ email, password, coords })
+    const syncLogin = Meteor.wrapAsync(bot.login, bot)
+    try {
+      const token = syncLogin()
+      overlord2.registerBot(token, bot)
+      return token
+    } catch (err) {
+      console.log(err)
+      throw new Meteor.Error(err)
+    }
   }
 })
 
@@ -217,7 +183,19 @@ Meteor.startup(() => {
 });
 
 
-
+/*
+if (candiesByPokemon[pokemon.pokemon_id] >= pokedexInfo.candy && pokedexInfo.candy) {
+  candiesByPokemon[pokemon.pokemon_id] = candiesByPokemon[pokemon.pokemon_id] - pokedexInfo.candy
+  console.log('SHOULD EVOLVE ' + pokedexInfo.name + ' (' + pokemon.id + ')')
+  botInstance.EvolvePokemon(pokemon.id.toString(), (err, res) => {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log(res)
+    }
+  })
+}
+*/
 /*
 console.log('start patrol');
 const patrolRoute = PatrolRoutes.findOne({

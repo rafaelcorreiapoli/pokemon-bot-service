@@ -2,6 +2,8 @@ import Bot from '/imports/lib/Bot'
 import { Bots } from '/imports/api/bots'
 import { Encounters } from '/imports/api/encounters'
 import { Pokestops } from '/imports/api/pokestops'
+import { Eggs } from '/imports/api/eggs'
+import { Pokemons } from '/imports/api/pokemons'
 import { Gyms } from '/imports/api/gyms'
 
 export default class Overlord {
@@ -61,6 +63,73 @@ export default class Overlord {
 
     }
 
+    bot.onFetchInventory = ({
+      eggs,
+      pokemons,
+      items,
+      candies
+    }) => {
+      eggs.forEach(egg => {
+        Eggs.upsert({
+          _id: egg.idNumber
+        }, {
+          $set: {
+            _id: egg.idNumber,
+            eggId: egg.id,
+            walkedTarget: egg.egg_km_walked_target,
+            walkedStart: egg.egg_km_walked_start,
+            botId
+          }
+        })
+      })
+
+      pokemons.forEach(pokemon => {
+        Pokemons.upsert({
+          _id: pokemon.idNumber
+        }, {
+          $set: {
+            _id: pokemon.idNumber,
+            pokemonId: pokemon.id,
+            pokedexId: pokemon.pokemon_id,
+            cp: pokemon.cp,
+            stamina: pokemon.stamina,
+            staminaMax: pokemon.staminaMax,
+            height: pokemon.height_m,
+            weight: pokemon.weight_kg,
+            attack: pokemon.individual_attack,
+            defense: pokemon.individual_defense,
+            moves: [pokemon.move_1, pokemon.move_2],
+            botId
+          }
+        })
+      })
+
+      // candies.forEach(candy => {
+      //   Candies.upsert({
+      //     botId,
+      //     pokedexNumber: candy.pokedexNumber
+      //   }, {
+      //     $set: {
+      //       botId,
+      //       pokedexNumber: candy.pokedexNumber,
+      //       count: candy.count
+      //     }
+      //   })
+      // })
+      //
+      // items.forEach(item => {
+      //   Items.upsert({
+      //     botId,
+      //     itemId: item.item_id
+      //   }, {
+      //     $set: {
+      //       botId,
+      //       itemId: item.item_id,
+      //       count: item.count
+      //     }
+      //   })
+      // })
+    }
 
     bot.onPokemonFound = ( {encounterIdNumber, ...data}) => {
       const encounter = Encounters.findOne(String(encounterIdNumber))

@@ -116,15 +116,13 @@ export default class Bot {
       this.log(`successfully fetched profile`)
       Bots.update(this.botId, {
         $set: {
-          pokemonGoProfile: {
-            pokeStorage: poke_storage,
-            itemStorage: item_storage,
-            team,
-            username,
-            avatar,
-            pokecoin,
-            stardust,
-          }
+          'pokemonGoProfile.pokeStorage': poke_storage,
+          'pokemonGoProfile.itemStorage': item_storage,
+          'pokemonGoProfile.team': team,
+          'pokemonGoProfile.username': username,
+          'pokemonGoProfile.avatar': avatar,
+          'pokemonGoProfile.pokecoin': pokecoin,
+          'pokemonGoProfile.stardust': stardust,
         }
       })
     }))
@@ -155,6 +153,14 @@ export default class Bot {
         }
       })
       this.scan();
+      Meteor.setTimeout(() => {
+        this.fetchInventory();
+
+        Meteor.setTimeout(() => {
+          this.refreshProfile();
+        }, 1000)
+      }, 1000)
+
     }))
   }
 
@@ -310,6 +316,17 @@ export default class Bot {
     }));
   }
 
+  transferPokemon(pokemonId) {
+    this.log(`transfering ${pokemonId}`)
+    this.api.TransferPokemon(pokemonId, Meteor.bindEnvironment((error, res) => {
+      if (error) {
+        this.handleBotError(error)
+        return;
+      }
+      console.log(res)
+      this.log(`successfuly transfered pokemon`)
+    }))
+  }
   encounter(encounterIdNumber, encounterId, spawnPointId) {
     const catchablePokemon = this.buildCatchablePokemon(encounterId, spawnPointId)
     this.api.EncounterPokemon(catchablePokemon, Meteor.bindEnvironment((suc, dat) => {
@@ -356,4 +373,127 @@ export default class Bot {
         this.log(`pokestop is too far away. ${distance} away.`)
       }
   }
+
+  dropItem(itemId, count) {
+    this.log(`dropping ${itemId} (${count})`)
+    this.api.DropItem(itemId, count, Meteor.bindEnvironment((error, res) => {
+      if (error) {
+        this.handleBotError(error)
+        return;
+      }
+
+      this.log(`successfully dropped item(s)`)
+    }))
+  }
+
+  fetchInventory() {
+    this.log(`fetching inventory`)
+    this.api.GetInventory(Meteor.bindEnvironment((error, res) => {
+      if (error) {
+        this.handleBotError(error)
+        return;
+      }
+
+      this.log(`fetch inventory success`)
+      let level
+      let uniquePokedex
+      let eggs = []
+      let pokemons = []
+      let items = []
+      let candies = []
+      const inventoryItems = res.inventory_delta.inventory_items
+      inventoryItems.forEach(item => {
+        const inventoryItemData = item.inventory_item_data;
+
+        // Candies
+        if (inventoryItemData.pokemon_family) {
+          const pokemonFamily = inventoryItemData.pokemon_family;
+          const pokemonFamilyId = pokemonFamily.family_id;
+          const pokemonFamilyCandy = pokemonFamily.candy;
+
+          candies.push({
+            pokedexNumber: pokemonFamilyId,
+            count: pokemonFamilyCandy
+          })
+        }
+
+        // Check for pokemon.
+        if (inventoryItemData.pokemon) {
+          const pokemon = inventoryItemData.pokemon;
+          pokemon.idNumber = String(convertLongToNumber(pokemon.id))
+          if (pokemon.is_egg) {
+            eggs.push(pokemon);
+          } else {
+            pokemons.push(pokemon);
+          }
+        }
+
+        // Check for player stats.
+        if (inventoryItemData.player_stats) {
+          const player = inventoryItemData.player_stats;
+          level = player.level;
+          uniquePokedex = player.unique_pokedex_entries
+        }
+
+        // Check for item.
+        if (inventoryItemData.item) {
+          const item = inventoryItemData.item;
+          items.push({
+            itemId: item.item_id,
+            count: item.count
+          });
+        }
+      })
+
+      Bots.update(this.botId, {
+        $set: {
+          'pokemonGoProfile.level': level,
+          'pokemonGoProfile.uniquePokedex': uniquePokedex,
+          'pokemonGoProfile.items': items,
+          'pokemonGoProfile.candies': candies,
+        }
+      })
+
+      this.onFetchInventory && this.onFetchInventory({
+        eggs,
+        pokemons,
+        items,
+        candies
+      })
+
+    }));
+  }
+
+  evolvePokemon(pokemonId) {
+    // if (candiesByPokemon[pokemonId] >= pokedexInfo.candy && pokedexInfo.candy) {
+    //   candiesByPokemon[pokemonId] = candiesByPokemon[pokemonId] - pokedexInfo.candy
+    //   console.log('SHOULD EVOLVE ' + pokedexInfo.name + ' (' + pokemon.id + ')')
+
+    this.log(`evolving pokemon ${pokemonId}`)
+    this.api.EvolvePokemon(pokemonId, Meteor.bindEnvironment((err, res) => {
+      if (error) {
+        this.handleBotError(error)
+        return;
+      }
+
+      this.log(`evolve pokemon success`)
+      console.log(res)
+    }))
+  //   }
+  // }
+  }
 }
+
+/*
+if (candiesByPokemon[pokemon.pokemon_id] >= pokedexInfo.candy && pokedexInfo.candy) {
+  candiesByPokemon[pokemon.pokemon_id] = candiesByPokemon[pokemon.pokemon_id] - pokedexInfo.candy
+  console.log('SHOULD EVOLVE ' + pokedexInfo.name + ' (' + pokemon.id + ')')
+  botInstance.EvolvePokemon(pokemon.id.toString(), (err, res) => {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log(res)
+    }
+  })
+}
+*/
