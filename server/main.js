@@ -42,11 +42,10 @@ const BOT_STATUS_LOGGED_IN = 2;
 const BOT_STATUS_PATROLLING = 3;
 const BOT_STATUS_ERROR = 4;
 
-const overlord = new Overlord();
-const overlord2 = new Overlord2();
+const overlord = new Overlord2();
 
 Meteor.startup(() => {
-  overlord.recoverBots()
+  //overlord.recoverBots()
 })
 
 
@@ -55,24 +54,24 @@ const convertLongToNumber = (object) => Long.fromBits(object.low, object.high, o
 Meteor.methods({
   'encounterPokemon'({ token, encounterId, spawnPointId }) {
     check(token, String)
-    check(encounterId, String)
+    check(encounterId, Object)
     check(spawnPointId, String)
-    const bot = overlord.getBotSync(token)
+    const bot = overlord.getSyncBot(token)
     try {
-      return bot.encounter(encounterIdNumber, encounterId, spawnPointId)
+      return bot.encounter(encounterId, spawnPointId)
     } catch (error) {
-      throw new Meteor.Error(error)
+      throw new Meteor.Error(error.reason)
     }
   },
   'catchPokemon'({ token, encounterId, spawnPointId }) {
     check(token, String)
-    check(encounterId, String)
+    check(encounterId, Object)
     check(spawnPointId, String)
     const bot = overlord.getSyncBot(token)
     try {
       return bot.catchPokemon(encounterId, spawnPointId)
     } catch (error) {
-      throw new Meteor.Error(error)
+      throw new Meteor.Error(error.reason)
     }
   },
   'fetchInventory'({ token }) {
@@ -81,7 +80,7 @@ Meteor.methods({
     try {
       return bot.fetchInventory()
     } catch (error) {
-      throw new Meteor.Error(error)
+      throw new Meteor.Error(error.reason)
     }
   },
   'evolvePokemon'({ token, pokemonId }) {
@@ -92,7 +91,7 @@ Meteor.methods({
     try {
       return bot.evolvePokemon(pokemonId)
     } catch (error) {
-      throw new Meteor.Error(error)
+      throw new Meteor.Error(error.reason)
     }
   },
   'dropItem'({ token, itemId, count }) {
@@ -103,7 +102,7 @@ Meteor.methods({
     try {
       return bot.dropItem(itemId, counter)
     } catch (error) {
-      throw new Meteor.Error(error)
+      throw new Meteor.Error(error.reason)
     }
   },
   'transferPokemon'({ token, pokemonId }) {
@@ -114,7 +113,7 @@ Meteor.methods({
     try {
       return bot.transferPokemon(pokemonId)
     } catch (error) {
-      throw new Meteor.Error(error)
+      throw new Meteor.Error(error.reason)
     }
   },
   'getPokestop'({ token, pokestopId, latitude, longitude }) {
@@ -128,7 +127,7 @@ Meteor.methods({
     try {
       return bot.getPokestop(pokestopId, lLatitude, lLongitude)
     } catch (error) {
-      throw new Meteor.Error(error)
+      throw new Meteor.Error(error.reason)
     }
 
   },
@@ -140,8 +139,10 @@ Meteor.methods({
     const bot = overlord.getSyncBot(token)
     try {
       const coords = bot.setPosition(latitude, longitude)
+      const scan = bot.scan()
+      return scan;
     } catch (error) {
-      throw new Meteor.Error(err)
+      throw new Meteor.Error(error.reason)
     }
   },
   'fetchProfile'({ token }) {
@@ -150,8 +151,7 @@ Meteor.methods({
     try {
       return bot.fetchProfile()
     } catch (error) {
-      console.log(error)
-      throw new Meteor.Error(error)
+      throw new Meteor.Error(error.reason)
     }
   },
   'login'({ email, password, coords }) {
@@ -162,10 +162,9 @@ Meteor.methods({
     const syncLogin = Meteor.wrapAsync(bot.login, bot)
     try {
       const token = syncLogin()
-      overlord2.registerBot(token, bot)
+      overlord.registerBot(token, bot)
       return token
     } catch (err) {
-      console.log(err)
       throw new Meteor.Error(err)
     }
   }
@@ -181,134 +180,3 @@ Meteor.startup(() => {
     }
   };
 });
-
-
-/*
-if (candiesByPokemon[pokemon.pokemon_id] >= pokedexInfo.candy && pokedexInfo.candy) {
-  candiesByPokemon[pokemon.pokemon_id] = candiesByPokemon[pokemon.pokemon_id] - pokedexInfo.candy
-  console.log('SHOULD EVOLVE ' + pokedexInfo.name + ' (' + pokemon.id + ')')
-  botInstance.EvolvePokemon(pokemon.id.toString(), (err, res) => {
-    if (err) {
-      console.error(err)
-    } else {
-      console.log(res)
-    }
-  })
-}
-*/
-/*
-console.log('start patrol');
-const patrolRoute = PatrolRoutes.findOne({
-  botId
-})
-const routePlan = patrolRoute.routePlan;
-const botInstance = botInstances[botId]
-
-Bots.update({
-  _id: botId
-}, {
-  $set: {
-    status: BOT_STATUS_PATROLLING
-  }
-})
-
-patrolIntervals[botId] = Meteor.setInterval(() => {
-  const bot = Bots.findOne(botId)
-  const { coords: {latitude, longitude} } = bot
-  let { currentStep = 0} = bot
-  console.log('latitude: ', latitude)
-  console.log('longitude: ', longitude)
-  console.log('currentStep: ', currentStep)
-  if (currentStep > routePlan.length) currentStep = 0;
-
-  const newPosition = routePlan[currentStep]
-
-  const newCurrentStep = (currentStep + 1) % routePlan.length;
-
-
-  botInstance.SetLocation({
-    type: 'coords',
-    coords: {
-      latitude: parseFloat(newPosition.latitude),
-      longitude: parseFloat(newPosition.longitude)
-    }
-  }, Meteor.bindEnvironment((err, coordinates) => {
-    if (err) {
-      console.log('[Error setLocationOnpatrol] ', err.toString())
-      Bots.update({
-        _id: botId
-      }, {
-        $set: {
-          status: BOT_STATUS_ERROR
-        }
-      })
-      Meteor.clearInterval(patrolIntervals[botId])
-      delete patrolIntervals[botId]
-    }
-    Bots.update({
-      _id: botId
-    }, {
-      $set: {
-        currentStep: newCurrentStep,
-        coords: {
-          latitude: newPosition.latitude,
-          longitude: newPosition.longitude
-        }
-      }
-    })
-
-
-
-
-    botInstance.Heartbeat(Meteor.bindEnvironment((err, hb) => {
-      if(err) {
-        return console.log('[Error at HeartBeat] ', err);
-      }
-      for (var i = hb.cells.length - 1; i >= 0; i--) {
-        const mapPokemon = hb.cells[i].MapPokemon;
-        if (mapPokemon && Array.isArray(mapPokemon) && mapPokemon.length) {
-          mapPokemon.forEach(pokemon => {
-            const pokedexNumber = pokemon.PokedexTypeId;
-            const latitude = pokemon.Latitude;
-            const longitude = pokemon.Longitude;
-            const spawnPointId = pokemon.SpawnPointId
-            const encounterId  = convertLongToNumber(pokemon.EncounterId)
-            const expirationTimeMs = convertLongToNumber(pokemon.ExpirationTimeMs)
-
-            const poke = Pokemons.findOne({
-              pokedexNumber
-            })
-
-            console.log('[+] There is a ' + poke.name + ' in [ ', latitude , ',', longitude ,']');
-
-            const detection = Encounters.findOne({
-              encounterId
-            })
-            if (!detection) {
-              Encounters.insert({
-                pokedexNumber,
-                latitude,
-                longitude,
-                encounterId,
-                expirationTimeMs,
-                botId,
-                spawnPointId,
-                long: {
-                  encounterId: pokemon.EncounterId,
-                  spawnPointId: pokemon.SpawnPointId
-                },
-                expirationDate: moment(expirationTimeMs).toDate(),
-
-              })
-              console.log('[+] Registering new encounter');
-            } else {
-              console.log('[+] This encounter is already registered.');
-            }
-
-          })
-        }
-      }
-    }));
-  }))
-}, BOT_POSITION_UPDATE_PERIOD_S * 1000)
-*/

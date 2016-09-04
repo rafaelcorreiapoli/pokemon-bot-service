@@ -2,7 +2,7 @@ import geolib from 'geolib'
 import moment from 'moment'
 import PokemonGO from 'pokemon-go-node-api';
 import { Bots } from '/imports/api/bots'
-import { convertLongToNumber } from '/imports/lib/utils/long'
+import { convertLongToString, convertLongToNumber } from '/imports/lib/utils/long'
 import { itemsById, pokemonsById } from '/imports/resources'
 import { Random } from 'meteor/random'
 
@@ -46,7 +46,6 @@ export default class Bot {
   }
 
   _handleBotError(error) {
-    console.log(JSON.stringify(error))
     this.logError(`${error.toString()}`)
 
     Bots.update(this.botId, {
@@ -99,7 +98,7 @@ export default class Bot {
     })
   }
 
-  encounter(encounterIdNumber, encounterId, spawnPointId, cb) {
+  encounter(encounterId, spawnPointId, cb) {
     const catchablePokemon = this._buildCatchablePokemon(encounterId, spawnPointId)
     this.api.EncounterPokemon(catchablePokemon, Meteor.bindEnvironment((error, res) => {
       if (error) {
@@ -107,12 +106,14 @@ export default class Bot {
         cb(error)
         return;
       }
-
+      console.log(error)
+      console.log(res)
       if (res) {
         const encounterStatus = res.EncounterStatus
         this.log(`encountered pokemon. encounter status: ${encounterStatus}.`)
-        cb({
-          encounterStatus: res.EncounterStatus
+        cb(null, {
+          encounterStatus: res.EncounterStatus,
+          cp: res.WildPokemon && res.WildPokemon.pokemon.cp
         })
       }
     }));
@@ -121,8 +122,6 @@ export default class Bot {
   catchPokemon(encounterId, spawnPointId, cb) {
     const catchablePokemon = this._buildCatchablePokemon(encounterId, spawnPointId)
     this.api.CatchPokemon(catchablePokemon, 1, 1.950, 1, 1, Meteor.bindEnvironment((error, res) => {
-      console.log(error)
-      console.log(res)
       if (error) {
         this._handleBotError(error)
         cb(error)
@@ -172,7 +171,7 @@ export default class Bot {
         // Check for pokemon.
         if (inventoryItemData.pokemon) {
           const pokemon = inventoryItemData.pokemon;
-          pokemon.idNumber = String(convertLongToNumber(pokemon.id))
+          pokemon.idNumber = convertLongToString(pokemon.id)
           if (pokemon.is_egg) {
             eggs.push({
               eggIdNumber: pokemon.idNumber,
@@ -260,7 +259,6 @@ export default class Bot {
         cb(error)
         return;
       }
-      console.log(res)
       this.log(`successfuly transfered pokemon`)
       cb(null, res)
     }))
@@ -328,7 +326,7 @@ export default class Bot {
         return;
       }
       const { team, username, avatar, poke_storage, item_storage, currency } = profile
-      const { pokecoin, stardust } = this.extractCurrency(currency)
+      const { pokecoin, stardust } = this._extractCurrency(currency)
 
       this.log(`successfully fetched profile`)
       cb(null, {
@@ -344,7 +342,6 @@ export default class Bot {
   }
 
   login(cb) {
-    console.log(this)
     this.log(`logging in`)
     const location = this._buildLocation(this.coords.latitude, this.coords.longitude)
 
@@ -366,34 +363,38 @@ export default class Bot {
   }
 
 
-  scan() {
-    const { coords: {latitude, longitude} } = this.fetchBot();
-    if (this.scanAgainTimer) {
-      Meteor.clearTimeout(this.scanAgainTimer)
-    }
-    this.scanAgainTimer = Meteor.setTimeout(() => {
-      this.scan()
-    }, AUTO_SCAN_INTERVAL)
+  scan(callback) {
+    // if (this.scanAgainTimer) {
+    //   Meteor.clearTimeout(this.scanAgainTimer)
+    // }
+    // this.scanAgainTimer = Meteor.setTimeout(() => {
+    //   this.scan()
+    // }, AUTO_SCAN_INTERVAL)
 
+    const encounters = []
+    const gyms = []
+    const pokestops = []
     this.log(`scanning area. auto scan in ${AUTO_SCAN_INTERVAL / 1000} secs`)
+
     this.api.Heartbeat(Meteor.bindEnvironment((error, res) => {
       if (error) {
         this._handleBotError(error)
+        callback(error)
         return;
       }
 
-      for (var i = res.cells.length - 1; i >= 0; i--) {
+      for (let i = res.cells.length - 1; i >= 0; i--) {
         const mapPokemon = res.cells[i].MapPokemon || [];
         const forts = res.cells[i].Fort || []
         forts.forEach(fort => {
           const latitude = fort.Latitude
           const longitude = fort.Longitude
-          const distance = this._getDistanceFromBot(latitude, longitude)
+          //const distance = this._getDistanceFromBot(latitude, longitude)
 
           if (fort.FortType === 1) {
             // Pokestops
             //this.log(`scanned a pokestop ${distance} meters away`)
-            this.onPokestopFound && this.onPokestopFound({
+            pokestops.push({
               pokestopId: fort.FortId,
               latitude,
               longitude
@@ -401,7 +402,7 @@ export default class Bot {
           } else if (fort.FortType === 0) {
             // Gyms
             //this.log(`scanned a gym ${distance} meters away`)
-            this.onGymFound && this.onGymFound({
+            gyms.push({
               gymId: fort.FortId,
               latitude,
               longitude
@@ -415,13 +416,13 @@ export default class Bot {
           const longitude = pokemon.Longitude;
           const spawnPointId = pokemon.SpawnPointId
           const encounterId  = pokemon.EncounterId
-          const encounterIdNumber = convertLongToNumber(pokemon.EncounterId)
+          const encounterIdNumber = convertLongToString(pokemon.EncounterId)
           const expirationTimeMs = convertLongToNumber(pokemon.ExpirationTimeMs)
           const pokedexInfo = pokemonsById[pokedexNumber]
-          const distance = this._getDistanceFromBot(latitude, longitude)
+          //const distance = this._getDistanceFromBot(latitude, longitude)
 
-          this.log(`scanned a pokemon ${pokedexInfo.name} ${distance} meters away`)
-          this.onPokemonFound({
+          this.log(`scanned a pokemon ${pokedexInfo.name}`)
+          encounters.push({
             botId: this.botId,
             expirationDate: moment(expirationTimeMs).toDate(),
             pokedexNumber,
@@ -434,12 +435,12 @@ export default class Bot {
           })
         })
       }
+
+      callback(null, {
+        pokestops,
+        gyms,
+        encounters
+      })
     }));
   }
-
-
-
-
-
-
 }

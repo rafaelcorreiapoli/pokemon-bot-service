@@ -40,7 +40,7 @@ export default class Overlord {
   getSyncBot(token) {
     if (this.bots[token]) {
       return Async.wrap(this.bots[token], [
-        'refreshProfile',
+        'fetchProfile',
         'setPosition',
         'scan',
         'catchPokemon',
@@ -49,6 +49,7 @@ export default class Overlord {
         'dropItem',
         'fetchInventory',
         'evolvePokemon',
+        'encounter'
       ]);
     } else {
       throw new Error('invalid token.')
