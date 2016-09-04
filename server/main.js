@@ -107,7 +107,7 @@ Meteor.methods({
   },
   'transferPokemon'({ token, pokemonId }) {
     check(token, String)
-    check(pokemonId, String)
+    check(pokemonId, Object)
     const bot = overlord.getSyncBot(token)
 
     try {
@@ -125,8 +125,9 @@ Meteor.methods({
     const bot = overlord.getSyncBot(token)
 
     try {
-      return bot.getPokestop(pokestopId, lLatitude, lLongitude)
+      return bot.getPokestop(pokestopId, latitude, longitude)
     } catch (error) {
+      console.log(error)
       throw new Meteor.Error(error.reason)
     }
 

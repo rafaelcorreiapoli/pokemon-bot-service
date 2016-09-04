@@ -86,7 +86,6 @@ export default class Bot {
 
   _getDistanceFromBot(latitude, longitude) {
     //  TODO: Make bot.coords always up to date
-    const bot = this.fetchBot();
     const botLatitude = bot.coords.latitude;
     const botLongitude = bot.coords.longitude;
     return geolib.getDistance({
@@ -266,40 +265,33 @@ export default class Bot {
 
 
   getPokestop(pokestopId, latitude, longitude, cb) {
-    const distance = this._getDistanceFromBot(latitude, longitude)
-      if (distance < 40) {
-        this.log(`pokestop is ${distance} away. can get it`)
-
-        this.api.GetFort(pokestopId, latitude, longitude, Meteor.bindEnvironment((error, res) => {
-          if (error) {
-            this._handleBotError(error)
-            cb(error)
-            return;
-          }
-          if (res) {
-            let itemsAwarded = []
-            if (res.result === 1) {
-              this.log(`success getting pokestop`)
-              this.log(`items acquired:`)
-              itemsAwarded = res.items_awarded.map(item => {
-                this.log(`  ${itemsById[item.item_id]}`)
-                return item.item_id
-              })
-            } else if (res.result === 2 ) {
-              this.log('pokestop is out of range.')
-            } else if (res.result === 3 ) {
-              this.log('pokestop is used')
-            }
-
-            cb(null, {
-              result: res.result,
-              itemsAwarded
-            })
-          }
-        }));
-      } else {
-        this.log(`pokestop is too far away. ${distance} away.`)
+    this.api.GetFort(pokestopId, latitude, longitude, Meteor.bindEnvironment((error, res) => {
+      if (error) {
+        this._handleBotError(error)
+        cb(error)
+        return;
       }
+      if (res) {
+        let itemsAwarded = []
+        if (res.result === 1) {
+          this.log(`success getting pokestop`)
+          this.log(`items acquired:`)
+          itemsAwarded = res.items_awarded.map(item => {
+            this.log(`  ${itemsById[item.item_id]}`)
+            return item.item_id
+          })
+        } else if (res.result === 2 ) {
+          this.log('pokestop is out of range.')
+        } else if (res.result === 3 ) {
+          this.log('pokestop is used')
+        }
+
+        cb(null, {
+          result: res.result,
+          itemsAwarded
+        })
+      }
+    }));
   }
 
   setPosition(latitude, longitude, cb) {
